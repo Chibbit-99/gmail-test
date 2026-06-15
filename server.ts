@@ -1,5 +1,5 @@
 // server.ts
-import { SmtpClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
+import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
 Deno.serve(async (req) => {
   const url = new URL(req.url);
@@ -12,14 +12,17 @@ Deno.serve(async (req) => {
     );
   }
 
-  const client = new SmtpClient();
-
   try {
-    await client.connectTLS({
-      hostname: "smtp.gmail.com",
-      port: 465,
-      username: Deno.env.get("GMAIL_USER")!,
-      password: Deno.env.get("GMAIL_APP_PASSWORD")!,
+    const client = new SMTPClient({
+      connection: {
+        hostname: "smtp.gmail.com",
+        port: 465,
+        tls: true,
+        auth: {
+          username: Deno.env.get("GMAIL_USER")!,
+          password: Deno.env.get("GMAIL_APP_PASSWORD")!,
+        },
+      },
     });
 
     await client.send({
@@ -28,8 +31,6 @@ Deno.serve(async (req) => {
       subject: "Hello from Deno",
       content: "This email was sent when someone visited the URL.",
     });
-
-    await client.close();
 
     return new Response(`Sent email to ${recipient}`);
   } catch (err) {
