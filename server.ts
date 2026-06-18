@@ -161,7 +161,7 @@ Deno.serve(async (req) => {
       return json({ success: false, error: "Turnstile verification failed" }, 403);
     }
 
-    const safeRecipient = recipient.replace(/\./g, ","); 
+    const safeRecipient = email.replace(/\./g, ","); 
     const existingToken = await readPath(`/${safeRecipient}`)
     if (existingToken) {
         return json({ success: true, message: "Token exists", token: existingToken });
