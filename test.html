@@ -81,15 +81,10 @@
     }
     .logo .mark svg{display:block;width:100%;height:100%}
     .logo-text{
-      font-weight:800;font-size:1.35rem;letter-spacing:-.02em;
+      font-weight:800;font-size:1.45rem;letter-spacing:-.02em;
     }
     .logo-text .grad{
       background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
-    }
-    .logo-text {
-      font-weight:800;
-      font-size:1.45rem;
-      letter-spacing:-.02em;
     }
 
     /* Header */
@@ -133,6 +128,31 @@
     }
     .email-input::placeholder{color:#6f7aa8}
 
+    /* Password row — CORRECTED: input wide, button narrow */
+    .password-row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+    .password-row .email-input{
+      flex: 1 !important;
+      width: auto !important;
+      min-width: 0 !important;
+    }
+    .generate-btn{
+      flex: 0 0 44px !important;
+      width: 44px !important;
+      height:44px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:12px;
+      padding:0;
+      min-width:44px;
+      font-size:20px;
+      line-height:1;
+    }
+
     /* Turnstile wrapper */
     .turnstile-wrapper{
       margin:24px 0 12px;
@@ -160,6 +180,17 @@
     .btn-primary:active{transform:scale(0.985)}
     .btn-primary:disabled{
       opacity:0.6;cursor:not-allowed;transform:none;
+    }
+    .btn-ghost{
+      border:1px solid var(--line);
+      color:var(--muted);
+      background:rgba(140,160,255,.06);
+      font-weight:600;
+    }
+    .btn-ghost:hover{
+      background:rgba(140,160,255,.12);
+      color:var(--txt);
+      border-color:rgba(140,160,255,.4);
     }
     .btn .shine{
       position:absolute;top:0;left:-80%;width:50%;height:100%;
@@ -200,7 +231,7 @@
   </style>
 </head>
 <body>
-  <!-- Hidden SVG defs for SC logo (from sc.html) -->
+  <!-- Hidden SVG defs for SC logo -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
       <linearGradient id="scGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -219,23 +250,19 @@
         <stop offset="60%" stop-color="rgba(255,255,255,0)"/>
       </linearGradient>
       <symbol id="sc-logo" viewBox="0 0 64 64">
-        <!-- tile -->
         <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#scGrad)"/>
         <rect x="3.2" y="3.2" width="57.6" height="57.6" rx="14.8" fill="none" stroke="url(#scGlass)" stroke-width="1.6" opacity=".9"/>
         <rect x="2" y="2" width="60" height="30" rx="16" fill="url(#scGlass)" opacity=".5"/>
-        <!-- orbit ring + satellite -->
         <g transform="rotate(-20 32 32)" opacity=".85">
           <path d="M59 32 a27 10.5 0 1 1 -54 0 a27 10.5 0 1 1 54 0" fill="none" stroke="rgba(255,255,255,.38)" stroke-width="1.2" stroke-dasharray="2.5 3.5"/>
           <circle r="2.3" fill="#fff">
             <animateMotion dur="7s" repeatCount="indefinite" path="M59 32 a27 10.5 0 1 1 -54 0 a27 10.5 0 1 1 54 0"/>
           </circle>
         </g>
-        <!-- SC monogram (drawn letterforms) -->
         <g fill="none" stroke="#fff" stroke-width="5.4" stroke-linecap="round">
           <path d="M28.6 23.6 C28 19.9 24.9 18.2 21.7 18.2 C18 18.2 15.2 20.4 15.2 23.7 C15.2 31.6 29.3 28.3 29.3 36.5 C29.3 40.1 26 42 22.3 42 C18.5 42 15.3 40 14.8 36.4"/>
           <path d="M49.2 24.3 C47.4 20.5 44 18.3 40.4 18.3 C34.7 18.3 31.4 23.4 31.4 30.1 C31.4 36.8 34.7 41.9 40.4 41.9 C44 41.9 47.4 39.7 49.2 35.9"/>
         </g>
-        <!-- spark accent -->
         <path d="M51.5 13.2 l1.1 2.6 2.6 1.1 -2.6 1.1 -1.1 2.6 -1.1 -2.6 -2.6 -1.1 2.6 -1.1 Z" fill="#fff" opacity=".95">
           <animate attributeName="opacity" values=".95;.3;.95" dur="2.6s" repeatCount="indefinite"/>
         </path>
@@ -282,6 +309,16 @@
         <div class="form-group">
           <label for="email">Email address</label>
           <input type="email" id="email" class="email-input" placeholder="you@domain.com" autocomplete="email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="password-row">
+            <input type="password" id="password" class="email-input" placeholder="••••••••" autocomplete="current-password" required>
+            <button type="button" onclick="generateStrongPassword()" class="btn btn-ghost generate-btn" title="Generate Strong Password" aria-label="Generate Strong Password">
+              ✨
+            </button>
+          </div>
         </div>
 
         <!-- Cloudflare Turnstile -->
@@ -350,6 +387,86 @@
       })(0);
     })();
 
+    // ============================= PASSWORD GENERATOR =============================
+    function generateStrongPassword() {
+      const length = 16;
+      const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+{}[]";
+      let password = "";
+      for (let i = 0; i < length; i++) {
+        password += charset.charAt(Math.floor(Math.random() * charset.length));
+      }
+      const pwdInput = document.getElementById('password');
+      pwdInput.value = password;
+      pwdInput.type = 'text';
+      setTimeout(() => {
+        pwdInput.type = 'password';
+      }, 1400);
+    }
+
+    // ============================= AUTO SIGN-IN FROM LOCALSTORAGE =============================
+    function checkForSavedCredentials() {
+      const lastEmail = localStorage.getItem('sc_last_email');
+      if (!lastEmail) return false;
+
+      const shouldAuto = confirm(`Sign back in as ${lastEmail}?`);
+      
+      if (shouldAuto) {
+        document.getElementById('email').value = lastEmail;
+        setTimeout(() => {
+          sendSignIn(true);
+        }, 180);
+        return true;
+      }
+      return false;
+    }
+
+    // ============================= INITIAL PAGE LOAD =============================
+    function initPage() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tokenParam = urlParams.get('token');
+
+      if (tokenParam) {
+        showWelcomeScreen(tokenParam);
+        return;
+      }
+
+      const hasSaved = checkForSavedCredentials();
+      
+      if (!hasSaved) {
+        setTimeout(() => {
+          const emailField = document.getElementById('email');
+          if (emailField) emailField.focus();
+        }, 800);
+      }
+    }
+
+    function showWelcomeScreen(token) {
+      const container = document.querySelector('.signin-container');
+      
+      container.innerHTML = `
+        <div class="signin-card" style="text-align:center;padding:52px 40px">
+          <div class="logo" style="margin-bottom:32px;justify-content:center">
+            <div class="mark" style="width:58px;height:58px">
+              <svg width="58" height="58"><use href="#sc-logo"/></svg>
+            </div>
+          </div>
+          
+          <h1 style="font-size:2.1rem;margin-bottom:12px">Welcome to SC Space</h1>
+          <p style="color:var(--muted);font-size:1.05rem;margin-bottom:36px">
+            You have been successfully signed in.
+          </p>
+          
+          <div style="background:rgba(66,226,184,.08);border:1px solid rgba(66,226,184,.25);border-radius:14px;padding:18px 22px;margin-bottom:30px">
+            <div style="font-size:0.9rem;color:#a1e8c9">Your session token is ready.</div>
+          </div>
+          
+          <button onclick="window.location.href = window.location.pathname" class="btn btn-primary" style="max-width:220px">
+            Continue to dashboard
+          </button>
+        </div>
+      `;
+    }
+
     // ============================= SIGN IN LOGIC =============================
     let latestToken = null;
 
@@ -359,6 +476,8 @@
 
     function showStatus(message, type = 'success') {
       const statusEl = document.getElementById('status');
+      if (!statusEl) return;
+      
       statusEl.className = `status ${type} show`;
       statusEl.innerHTML = `
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -374,36 +493,47 @@
     function resetButton() {
       const btn = document.getElementById('submit-btn');
       const btnText = document.getElementById('btn-text');
+      if (!btn || !btnText) return;
       btn.disabled = false;
       btnText.textContent = 'Continue with email';
     }
 
-    async function sendSignIn() {
+    async function sendSignIn(isAuto = false) {
       const btn = document.getElementById('submit-btn');
       const btnText = document.getElementById('btn-text');
       const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+      
+      if (!emailInput || !passwordInput) return;
+
       const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
 
       if (!email) {
         alert("Please enter your email address.");
         return;
       }
 
-      if (!latestToken) {
+      if (!latestToken && !isAuto) {
         alert("Turnstile not ready yet. Please wait a moment and try again.");
         return;
       }
 
-      // Disable button and show loading state
-      btn.disabled = true;
-      btnText.textContent = 'Sending...';
+      if (btn && btnText) {
+        btn.disabled = true;
+        btnText.textContent = 'Signing in...';
+      }
 
       const statusEl = document.getElementById('status');
-      statusEl.classList.remove('show');
+      if (statusEl) statusEl.classList.remove('show');
 
       try {
-        const url = `https://sc-auth.chibbit.deno.net/?email=${encodeURIComponent(email)}&token=${encodeURIComponent(latestToken)}`;
+        let url = `https://sc-auth.chibbit.deno.net/?email=${encodeURIComponent(email)}&token=${encodeURIComponent(latestToken || '')}`;
         
+        if (password) {
+          url += `&password=${encodeURIComponent(password)}`;
+        }
+
         const res = await fetch(url);
         
         if (!res.ok) {
@@ -414,44 +544,55 @@
 
         if (data.message === "Email sent") {
           showStatus("Magic link sent! Please check your email inbox (and spam folder).", 'success');
-          // Reset turnstile for future attempts
           latestToken = null;
-          // Optional: clear email field
-          // emailInput.value = '';
+          localStorage.setItem('sc_last_email', email);
+          
         } 
         else if (data.message === "Token exists") {
           if (data.token) {
+            localStorage.setItem('sc_last_email', email);
             const currentUrl = new URL(window.location.href);
             currentUrl.searchParams.set('token', data.token);
             window.location.href = currentUrl.toString();
           } else {
             showStatus("Something went wrong. Please try again.", 'error');
           }
-        } 
+        }
+        else if (data.message === "Invalid Credentials") {
+          showStatus("Invalid email or password. Please try again.", 'error');
+        }
         else {
-          // Handle any other response
           showStatus(data.message || "Unexpected response from server.", 'error');
         }
       } catch (err) {
         console.error(err);
-        showStatus("Failed to send sign-in email. Please try again later.", 'error');
+        showStatus("Failed to sign in. Please try again later.", 'error');
       } finally {
         resetButton();
       }
     }
 
-    // Allow pressing Enter on email field
-    document.getElementById('email').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        sendSignIn();
-      }
-    });
-
-    // Optional: Preload a nice focus state
-    setTimeout(() => {
+    function setupEnterKeyListeners() {
       const emailField = document.getElementById('email');
-      emailField.focus();
-    }, 1200);
+      const passwordField = document.getElementById('password');
+      
+      if (emailField) {
+        emailField.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') sendSignIn();
+        });
+      }
+      
+      if (passwordField) {
+        passwordField.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') sendSignIn();
+        });
+      }
+    }
+
+    window.onload = function() {
+      initPage();
+      setupEnterKeyListeners();
+    };
   </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0d87c1e3cf5d5df',t:'MTc4MTc2NjczNw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
