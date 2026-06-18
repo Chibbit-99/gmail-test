@@ -102,7 +102,7 @@ async function verifyTurnstile(token: string, ip: string) {
 
 async function buildEmail(recipient: string, password: string) {
   const token = generateToken();
-  const appURL = "https://chibbit-99.github.io/sc-auth"
+  const appURL = "auth.scspace.app"
   const html = `
     <div style="font-family:Arial;padding:20px;line-height:1.5">
       <h2 style="color:#4f46e5;">Welcome to SC Space!! 👋</h2>
