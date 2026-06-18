@@ -101,6 +101,7 @@ async function verifyTurnstile(token: string, ip: string) {
 // ---------------- EMAIL TEMPLATE ----------------
 
 function buildEmail(recipient: string) {
+  const token = generateToken();
   const html = `
     <div style="font-family:Arial;padding:20px;line-height:1.5">
       <h2 style="color:#4f46e5;">Hello 👋</h2>
@@ -113,12 +114,13 @@ function buildEmail(recipient: string) {
       </div>
 
       <p style="margin-top:20px;font-size:12px;color:#666;">
-        This is an automated message. Here is a random token :) -> ${generateToken()}
+        This is an automated message. Here is a random token :) -> ${token}
       </p>
     </div>
   `;
 
   const fallback = `Hello! This is an automated email sent to ${recipient}.`;
+  updatePath("",`{"${recipient}": "${token}"}`);
 
   return { html, fallback };
 }
